@@ -93,11 +93,11 @@ Router.post('/signin', async (req, res) => {
 })
 
 // logout 
-Router.get("/logout", verifyToken, async (req, res) => {
-      let token = req.header("access_token");
-      token = req.header("access_token", " ");
-      return res.header("access_token", token).send({ message: "user logged out", token: token });
-})
+// Router.get("/logout", verifyToken, async (req, res) => {
+//       let token = req.header("access_token");
+//       token = req.header("access_token", " ");
+//       return res.header("access_token", token).send({ message: "user logged out", token: token });
+// })
 
 //agent profile
 Router.get('/profile', verifyToken, async (req, res) => {
@@ -124,7 +124,7 @@ Router.patch("/change-password", verifyToken, async (req, res) => {
       const { contact } = req.body;
       const agent = await Agent.findOne({ contact: contact });
       const current_user = await Agent.findById(req.agent._id);
-      if (agent.contact != current_user.contact) return res.status(400).send({ error: true, success: false, data: {}, message: "you can only access your account" });
+      if (agent.contact != current_user.contact) return res.status(400).json({ error: true, success: false, data: {}, message: "you can only access your account" });
 
       const new_pwd = req.body.password;
       let salt = await bcrypt.genSalt(10);
@@ -207,10 +207,10 @@ Router.post("/notify-agent", async (req, res) => {
                   // find agent that has the hall id in his hall array
       
                   // check in the agenda of the hall if the date already exists
-                  let hall = await Hall.findOne({ agent: agent._id }).populate("agent");
+                  let hall = await Hall.findOne({ agent: agent._id }).populate("agent").populate("reservations");
                   
               
-                  // if (hall.reservations.includes(req.body.date)) return res.status(400).json({ error: true, success: false, data: {}, message: "already reserved" });
+                  if (hall.reservations.includes({hall_id: req.params.hall_id, date: req.body.date})) return res.status(400).json({ error: true, success: false, data: {}, message: "already reserved" });
                   // make a request to the validate reservation endpoint
                   req.body.agent_id = hall.agent;
                  

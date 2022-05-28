@@ -255,7 +255,7 @@ Router.post("/book-hall/:hall_id", isAuthzOrganizer, async (req, res) => {
 
             Axios({
                   method: "POST",
-                  url: `${process.env.APP_HOST + ':' + process.env.APP_PORT + '/api/agent/notify-agent'}`,
+                  url: 'http://localhost:5050/agent/notify-agent',
                   data: {
                         hall_id: req.params.hall_id,
                         date: req.body.date,
@@ -271,10 +271,6 @@ Router.post("/book-hall/:hall_id", isAuthzOrganizer, async (req, res) => {
                   const reservation = resp.data.data;
                   console.log({ reservation: reservation })
 
-                  /* update the organizer's event's array an add the reservations obect into it with a
-                  with a propery confirmed that is a boolean that is false by default and will be through only
-                  when the organizer will validate the reservation */
-                  // return
                   return res.status(200).json({ error: false, success: true, data: reservation, message: "a message has been sent to the hall agent, he will contact you for the deal" });
 
             }).catch(error => { console.log({ Error: error }); return res.json({ message: error }); });
@@ -285,27 +281,8 @@ Router.post("/book-hall/:hall_id", isAuthzOrganizer, async (req, res) => {
             return res.status(400).send({ error: error, message: "couldn't collect the data" });
       }
 
-      /*
-      .book is to add a date in the agenda array of the hall that has been booked.
-      .only hall agent has permision to do so.
-
-      
-
-      strategy.
-
-      send book request to hall agent 
-      agent updates the agenda 
-      you get notify for it.
-      */
-
 
 })
 
-// Router.get("/confirm-reservation-message", (req, res)=>{
-//       // this route contains information about the reservation made by the client as well as informations about the hall owner
-//       // the following information will be stored in the user account.
-//       const { reservation } = req.body.data;
-
-// })
 
 module.exports = Router;
