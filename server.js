@@ -18,7 +18,7 @@ app.use(
       helmet.contentSecurityPolicy({
         useDefaults: true,
         directives: {
-          "script-src": 'http://localhost:5050',
+          "script-src": '*',
           "style-src": null,
           "img-src": '*',
           "default-src": '*'
